@@ -1,0 +1,23 @@
+{
+  "name": "14backend-nodejs",
+  "version": "1.0.0",
+  "description": "Getting Started With Node and Express JS",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rahul4dev/BackendNodeJSRepo.git"
+  },
+  "keywords": [
+    "Backend",
+    "NodeJS"
+  ],
+  "author": "Rahul",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Rahul4dev/BackendNodeJSRepo/issues"
+  },
+  "homepage": "https://github.com/Rahul4dev/BackendNodeJSRepo#readme"
+}
