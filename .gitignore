@@ -2,3 +2,7 @@ app.js
 exe.js
 Hello.txt
 package.json
+package-lock.json
+/node_modules/
+/data/
+user.json
