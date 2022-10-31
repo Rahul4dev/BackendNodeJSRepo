@@ -10,8 +10,8 @@ For backend NodeJS learnings
       - Files are structured with required placeholders in order to help serverside access to those area easily.
       - However some of the changes are made during the serverside coding, but initial structuring helps the coder to manage and 
         interpret the requirements of the page and programs.
-    
-   -In Server-Side : or Backend coding, we make these files dynamic and interactive according to the user.
+ 
+  - In Server-Side : or Backend coding, we make these files dynamic and interactive according to the user.
       - We go through the files, see the requirements, run the code on browser to get the initial conditions and functioning of the page and overall website.
       - we then go through the actual requirements of the page where the page or the website require backend support 
         i.e, to store data, to generate dynamic data and more.
