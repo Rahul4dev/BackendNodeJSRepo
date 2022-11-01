@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 const express = require("express");
+const uuid = require("uuid");
 
 const app = express();
 
@@ -27,12 +28,31 @@ app.get("/restaurants", function (req, res) {
     restaurants: storedRestaurants,
   });
 });
+
+app.get("/restaurants/:id", function (req, res) {
+  const restaurantId = req.params.id;
+
+  const filePath = path.join(__dirname, "data", "restaurants.json");
+  const fileData = fs.readFileSync(filePath);
+  const storedRestaurants = JSON.parse(fileData);
+
+  for (const restaurant of storedRestaurants) {
+    if (restaurant.id === restaurantId) {
+      return res.render("restaurant-detail", { restaurant: restaurant });
+    }
+  }
+  // if we do not have a match
+  // chaining the methods and browser will show in console that error 404.
+  res.status(404).render("404");
+});
+
 app.get("/recommend", function (req, res) {
   res.render("recommend");
 });
 
 app.post("/recommend", function (req, res) {
   const restaurant = req.body;
+  restaurant.id = uuid.v4();
   const filePath = path.join(__dirname, "data", "restaurants.json");
 
   const fileData = fs.readFileSync(filePath);
@@ -50,6 +70,16 @@ app.get("/confirm", function (req, res) {
 });
 app.get("/about", function (req, res) {
   res.render("about");
+});
+
+app.use(function (req, res) {
+  // std 404 condition. Here All type of typo error is handled.
+  res.status(404).render("404");
+});
+
+app.use(function (error, req, res, next) {
+  // for server side error condition.
+  res.status(500).render("500");
 });
 
 app.listen(3000);
