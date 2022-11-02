@@ -6,20 +6,41 @@ const resData = require("../utility/restaurant-data");
 const restaurantRouter = express.Router();
 
 restaurantRouter.get("/restaurants", function (req, res) {
-  const restaurants = resData.getStoredRestaurants();
+  let order = req.query.order;
+  let nextOrder = "desc";
+
+  if (order !== "asc" && order !== "desc") {
+    order = "asc";
+  }
+
+  if (order === "desc") {
+    nextOrder = "asc";
+  }
+
+  const ourRestaurants = resData.getStoredRestaurants();
+  ourRestaurants.sort(function (resA, resB) {
+    if (
+      (order === "asc" && resA.name > resB.name) ||
+      (order === "desc" && resB.name > resA.name)
+    ) {
+      return 1;
+    }
+    return -1;
+  });
 
   res.render("restaurants", {
-    numberOfRestaurants: restaurants.length,
-    restaurants: restaurants,
+    numberOfRestaurants: ourRestaurants.length,
+    restaurants: ourRestaurants,
+    nextOrder: nextOrder,
   });
 });
 
 restaurantRouter.get("/restaurants/:id", function (req, res) {
   const restaurantId = req.params.id;
 
-  const restaurants = resData.getStoredRestaurants();
+  const ourRestaurants = resData.getStoredRestaurants();
 
-  for (const restaurant of restaurants) {
+  for (const restaurant of ourRestaurants) {
     if (restaurant.id === restaurantId) {
       return res.render("restaurant-detail", { restaurant: restaurant });
     }
@@ -36,11 +57,11 @@ restaurantRouter.get("/recommend", function (req, res) {
 restaurantRouter.post("/recommend", function (req, res) {
   const restaurant = req.body;
   restaurant.id = uuid.v4();
-  const restaurants = resData.getStoredRestaurants();
+  const ourRestaurants = resData.getStoredRestaurants();
 
-  restaurants.push(restaurant);
+  ourRestaurants.push(restaurant);
 
-  resData.storeRestaurants(restaurants);
+  resData.storeRestaurants(ourRestaurants);
 
   res.redirect("/confirm");
 });
