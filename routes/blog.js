@@ -35,4 +35,64 @@ router.post("/posts", async function (req, res) {
   res.redirect("/posts");
 });
 
+router.get("/posts/:id", async function (req, res) {
+  const query = `
+  select posts.*, authors.name AS author_name, authors.email AS author_email 
+  from authors
+  INNER JOIN posts on  posts.author_id = authors.id	
+  WHERE posts.id = ?
+  `;
+  const [posts] = await db.query(query, [req.params.id]);
+
+  if (!posts || posts.length === 0) {
+    return res.status(404).render("404"); // if we get no data corresponding to the id entered.
+  }
+
+  const postData = {
+    ...posts[0],
+    date: posts[0].date.toISOString(),
+    humanReadableDate: posts[0].date.toLocaleDateString("en-GB", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+  }; // copy of the first item of this object
+
+  res.render("post-detail", { post: postData });
+});
+
+router.get("/posts/:id/edit", async function (req, res) {
+  const query = `
+  select * from posts where id = ?
+  `;
+  const [posts] = await db.query(query, [req.params.id]);
+
+  if (!posts || posts.length === 0) {
+    return res.status(404).render("404"); // if we get no data corresponding to the id entered.
+  }
+
+  res.render("update-post", { post: posts[0] });
+});
+
+router.post("/posts/:id/edit", async function (req, res) {
+  const query = `
+    UPDATE posts SET title = ?, summary = ?, body = ?
+    WHERE id = ?
+  `;
+  await db.query(query, [
+    req.body.title,
+    req.body.summary,
+    req.body.content,
+    req.params.id,
+  ]);
+
+  res.redirect("/posts");
+});
+
+router.post("/posts/:id/delete", async function (req, res) {
+  await db.query("DELETE FROM posts where id = ?", [req.params.id]);
+  res.redirect("/posts");
+});
+
 module.exports = router;
